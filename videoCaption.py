@@ -14,6 +14,8 @@ def writeToFile(text,path="recognized.txt",mode="a"):
 folders = ["./chunks","./converted","./video"]
 for folder in folders:
   for filename in os.listdir(folder):
+    if filename == ".gitignore":
+      continue
     file_path = os.path.join(folder, filename)
     try:
       if os.path.isfile(file_path) or os.path.islink(file_path):
@@ -31,6 +33,7 @@ class TqdmForPyTube(tqdm):
 
 SAVE_PATH = "./video/"
 CHUNK_SIZE = 30
+LANGUAGE = input("Captioning should recognize which language from this video? (eg. en-IN, en-US, fa-IR etc.) : ")
 
 link = input("Enter video link : ")
 with TqdmForPyTube(unit='B', unit_scale=True, unit_divisor=1024, delay=2) as t:
@@ -57,7 +60,7 @@ for i in range(len(l)-1):
     with audio as source:
       r.adjust_for_ambient_noise(source)  
       audio_file = r.record(source)
-      result = r.recognize_google(audio_file, language = 'en-US')
+      result = r.recognize_google(audio_file, language = LANGUAGE)
       text = str(result) + "\n"
       writeToFile(text)
   except sr.UnknownValueError:
